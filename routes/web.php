@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\OrderController;
 
 
 //Main
@@ -35,7 +36,13 @@ Route::post('/cart/update/{id}', [CartController::class, 'update'])->name('cart.
 Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 Route::get('/cart/clear', [CartController::class, 'clearCart'])->name('cart.clear');
 
-//procesador de pago
-Route::get('/checkout', [PaymentController::class, 'showCheckout'])->name('checkout');
-Route::post('/process-payment', [PaymentController::class, 'processPayment'])->name('process.payment');
-Route::get('/payment-success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
+// Procesador de pago y gestión de pedidos: requiere que el usuario esté autenticado
+Route::middleware('auth')->group(function () {
+    Route::get('/checkout', [PaymentController::class, 'showCheckout'])->name('checkout');
+    Route::post('/process-payment', [PaymentController::class, 'processPayment'])->name('process.payment');
+    Route::get('/payment-success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
+
+    // Gestión de pedidos
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+});
