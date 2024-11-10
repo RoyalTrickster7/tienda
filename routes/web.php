@@ -42,6 +42,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/process-payment', [PaymentController::class, 'processPayment'])->name('process.payment');
     Route::get('/payment-success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
 
+    //Paypal
+    Route::get('/paypal-success', [PaymentController::class, 'paypalSuccess'])->name('paypal.success');
+    Route::get('/paypal-cancel', [PaymentController::class, 'showCheckout'])->name('paypal.cancel');
+    
+
+
     // Gestión de pedidos
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
+use App\Models\OrderItem;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class OrderController extends Controller
 {
@@ -21,7 +23,17 @@ class OrderController extends Controller
      */
     public function show($orderId)
     {
-        $order = Order::with('orderItems.product')->where('id', $orderId)->where('user_id', auth()->id())->firstOrFail();
+        $order = Order::with(['orderItem' => function(builder $query) {
+            $query->with('product');
+
+        }])->where('id', $orderId)->firstOrFail();
+        
+       // $orderitems = OrderItem::where('order_id', $orderId)->get();
+
+       // dump($order);
+
+     //dd($order);
+        
         return view('orders.show', compact('order'));
     }
 }

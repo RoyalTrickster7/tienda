@@ -5,14 +5,18 @@
 </head>
 <body>
     <h1>Detalles del Pedido #{{ $order->order_number }}</h1>
-
-    <p>Total: ${{ $order->total_price }}</p>
+    
+    <p>Total: ${{ number_format($order->total_price, 2) }}</p>
     <p>Estado: {{ $order->order_status }}</p>
 
-    <h2>Productos:</h2>
+    <h3>Productos:</h3>
     <ul>
-        @foreach ($order->orderItems as $item)
-            <li>{{ $item->quantity }} x {{ $item->product->name }} - ${{ $item->price }}</li>
+        @foreach ($order->orderItem as $item)
+            <li>
+                {{ $item->product->name }} - 
+                ${{ number_format($item->price, 2) }} x {{ $item->quantity }} 
+                (Total: ${{ number_format($item->price * $item->quantity, 2) }})
+            </li>
         @endforeach
     </ul>
 

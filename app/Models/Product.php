@@ -11,4 +11,9 @@ class Product extends Model
 
     // Opcional: Define los campos que se pueden asignar masivamente
     protected $fillable = ['name', 'description', 'price', 'stock', 'category_id', 'rating'];
+
+    public function orderItem()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
 }
