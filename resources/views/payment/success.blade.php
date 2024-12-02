@@ -1,32 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Pago Exitoso</title>
-</head>
-<body>
-    <h1>¡Gracias por tu compra!</h1>
-    <p>Tu pago ha sido procesado exitosamente.</p>
-    <a href="{{ route('products.index') }}">Volver al catálogo</a>
-   
+@extends('layouts.app')
 
-     <!-- Botón para ir al historial de pedidos -->
-     <a href="{{ route('orders.index') }}" class="btn-view-orders">Ver mis pedidos</a>
+@section('title', 'Pago Exitoso')
 
-     <style>
-        .btn-view-orders {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            text-align: center;
-            transition: background-color 0.3s ease;
-        }
+@section('content')
+<div class="container text-center">
+    <h1 class="mb-4 text-success">¡Gracias por tu compra!</h1>
+    <p class="mb-4">Tu pago ha sido procesado exitosamente.</p>
 
-        .btn-view-orders:hover {
-            background-color: #218838;
-        }
-    </style>
-</body>
-</html>
+    <div class="d-flex justify-content-center gap-3">
+        <a href="{{ route('products.index') }}" class="btn btn-primary">Volver al catálogo</a>
+        <a href="{{ route('orders.index') }}" class="btn btn-success">Ver mis pedidos</a>
+    </div>
+</div>
+@endsection

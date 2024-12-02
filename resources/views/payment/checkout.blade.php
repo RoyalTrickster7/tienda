@@ -1,80 +1,46 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Checkout</title>
-    <script src="https://js.stripe.com/v3/"></script>
-</head>
-<body>
-    <h1>Pagar</h1>
-    
-    @if (session('error'))
-        <div>{{ session('error') }}</div>
-    @endif
+@extends('layouts.app')
 
-    <!-- Formulario de selección de método de pago -->
-    <form action="{{ route('process.payment') }}" method="POST" id="payment-form">
-        @csrf
-        <input type="hidden" name="amount" value="1000"> <!-- Monto en dólares -->
+@section('title', 'Checkout')
 
-        <div>
-            <label for="payment_method">Selecciona un método de pago:</label>
-            <select name="payment_method" id="payment_method">
-                <option value="stripe">Tarjeta de Crédito (Stripe)</option>
-                <option value="paypal">PayPal</option>
-            </select>
-        </div>
+@section('content')
+<h1>Checkout</h1>
+@if (session('error'))
+    <div class="alert alert-danger">{{ session('error') }}</div>
+@endif
 
-        <!-- Elemento de Stripe -->
-        <div id="stripe-section">
-            <div id="card-element">
-                <!-- Stripe Elements se encarga de aquí -->
-            </div>
-        </div>
+<form action="{{ route('process.payment') }}" method="POST" id="payment-form">
+    @csrf
+    <input type="hidden" name="amount" value="1000"> <!-- Monto en dólares -->
 
-        <button type="submit">Proceder al Pago</button>
-    </form>
+    <div class="form-group">
+        <label for="payment_method">Selecciona un método de pago:</label>
+        <select name="payment_method" id="payment_method" class="form-select">
+            <option value="stripe">Tarjeta de Crédito (Stripe)</option>
+            <option value="paypal">PayPal</option>
+        </select>
+    </div>
 
-    <script>
-        const stripe = Stripe('{{ config('services.stripe.key') }}');
-        const elements = stripe.elements();
-        const cardElement = elements.create('card');
-        cardElement.mount('#card-element');
+    <div id="stripe-section" class="mt-3">
+        <div id="card-element"></div>
+    </div>
 
-        const form = document.getElementById('payment-form');
-        const paymentMethodSelect = document.getElementById('payment_method');
-        const stripeSection = document.getElementById('stripe-section');
+    <button type="submit" class="btn btn-success mt-3">Proceder al Pago</button>
+</form>
 
-        // Mostrar u ocultar la sección de Stripe basado en el método de pago seleccionado
-        paymentMethodSelect.addEventListener('change', function () {
-            if (paymentMethodSelect.value === 'stripe') {
-                stripeSection.style.display = 'block';
-            } else {
-                stripeSection.style.display = 'none';
-            }
-        });
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    const stripe = Stripe('{{ config('services.stripe.key') }}');
+    const elements = stripe.elements();
+    const cardElement = elements.create('card');
+    cardElement.mount('#card-element');
 
-        form.addEventListener('submit', async (event) => {
-            if (paymentMethodSelect.value === 'stripe') {
-                event.preventDefault();
+    const paymentMethodSelect = document.getElementById('payment_method');
+    const stripeSection = document.getElementById('stripe-section');
 
-                const { token, error } = await stripe.createToken(cardElement);
-                if (error) {
-                    console.error(error);
-                } else {
-                    const hiddenInput = document.createElement('input');
-                    hiddenInput.setAttribute('type', 'hidden');
-                    hiddenInput.setAttribute('name', 'stripeToken');
-                    hiddenInput.setAttribute('value', token.id);
-                    form.appendChild(hiddenInput);
-                    form.submit();
-                }
-            }
-        });
+    paymentMethodSelect.addEventListener('change', () => {
+        stripeSection.style.display = paymentMethodSelect.value === 'stripe' ? 'block' : 'none';
+    });
 
-        // Ocultar Stripe Elements al inicio si no está seleccionado
-        if (paymentMethodSelect.value !== 'stripe') {
-            stripeSection.style.display = 'none';
-        }
-    </script>
-</body>
-</html>
+    stripeSection.style.display = paymentMethodSelect.value === 'stripe' ? 'block' : 'none';
+</script>
+@endsection

@@ -1,23 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Historial de Pedidos</title>
-</head>
-<body>
-    <h1>Historial de Pedidos</h1>
+@extends('layouts.app')
+
+@section('title', 'Historial de Pedidos')
+
+@section('content')
+<div class="container">
+    <h1 class="mb-4">Historial de Pedidos</h1>
 
     @if ($orders->isEmpty())
-        <p>No has realizado ningún pedido.</p>
+        <div class="alert alert-info">No has realizado ningún pedido.</div>
     @else
-        <ul>
+        <ul class="list-group">
             @foreach ($orders as $order)
-                <li>
-                    <a href="{{ route('orders.show', $order->id) }}">Pedido #{{ $order->order_number }}</a> - ${{ $order->total_price }}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{{ route('orders.show', $order->id) }}">Pedido #{{ $order->order_number }}</a>
+                    <span>${{ number_format($order->total_price, 2) }}</span>
                 </li>
             @endforeach
         </ul>
     @endif
 
-    <a href="{{ route('products.index') }}">Volver al catálogo</a>
-</body>
-</html>
+    <a href="{{ route('products.index') }}" class="btn btn-primary mt-4">Volver al catálogo</a>
+</div>
+@endsection
